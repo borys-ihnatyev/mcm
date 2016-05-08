@@ -41,7 +41,7 @@
       "test/",
       "reports/"
     ],
-    "lines": 95,
+    "lines": 80,
     "check-coverage": true
   }
 }
