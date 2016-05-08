@@ -5,10 +5,10 @@
   "main": "src/index.js",
   "scripts": {
     "start": "nodemon",
-    "pretest": "npm run lint",
     "test": "mocha test",
-    "coverage": "nyc npm run test",
     "test-watch": "mocha test --watch",
+    "coverage": "nyc npm test",
+    "codecov": "nyc report | codecov",
     "lint": "eslint src"
   },
   "author": "Borys Ihnatyev",
@@ -16,6 +16,7 @@
   "license": "ISC",
   "devDependencies": {
     "chai": "^3.5.0",
+    "codecov": "^1.0.1",
     "eslint": "^2.8.0",
     "eslint-config-airbnb-base": "^1.0.3",
     "eslint-plugin-import": "^1.5.0",
