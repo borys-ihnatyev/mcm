@@ -1,5 +1,6 @@
 'use strict';
 
+const escapeRegExp = require('escape-string-regexp');
 const normalize = require('./normalize');
 const titleSeparators = require('../../../dictionary/titleSeparators.json');
 const variationSeparators = require('../../../dictionary/variationSeparators.json');
@@ -83,8 +84,4 @@ function removeTokens(value, ...tokens) {
         'g'
     );
     return value.replace(tokensRx, '');
-}
-
-function escapeRegExp(str) {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
