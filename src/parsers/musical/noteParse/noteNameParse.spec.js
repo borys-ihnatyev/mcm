@@ -1,11 +1,29 @@
 'use strict';
 
-const sut = require('./noteNameParse');
+const proxyquire = require('proxyquire').noCallThru();
 
 describe('parsers/musical/note/noteNameParse', () => {
 
-    const validNoteName = 'A';
-    const invalidNoteName = 'u';
+    const validNoteName = 'K';
+    const invalidNoteName = 'A';
+
+    let sut;
+    let settings;
+
+    const notesDictionary = [
+        validNoteName
+    ];
+
+    beforeEach(() => {
+
+        settings = {
+            get: env.stub().withArgs('notes').returns(notesDictionary)
+        };
+
+        sut = proxyquire('./noteNameParse', {
+            '../../../settings': settings
+        });
+    });
 
     describe('parsing', () => {
 

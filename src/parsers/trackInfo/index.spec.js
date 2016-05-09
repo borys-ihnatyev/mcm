@@ -1,20 +1,15 @@
 'use strict';
 
-const proxyquire = require('proxyquire');
-const titleSeparator = require('../../../dictionary/titleSeparators.json')[0];
-const variationSeparators = require('../../../dictionary/variationSeparators.json');
+const proxyquire = require('proxyquire').noCallThru();
+
 
 describe('parsers/trackInfo/trackInfoParse', () => {
-    let sut,
-        normalize,
-        parseArtists,
-        parseTitle,
-        parseVariation;
-
-    let value,
-        result;
-
     const artists = [1, 2, 3];
+    const titleSeparator = ' - ';
+    const variationSeparators = {
+        start: ['('],
+        end: [')']
+    };
 
     const title = {
         title: 'TITLE',
@@ -23,17 +18,38 @@ describe('parsers/trackInfo/trackInfoParse', () => {
 
     const variation = {};
 
+    let sut,
+        normalize,
+        parseArtists,
+        parseTitle,
+        parseVariation,
+        settings;
+
+    let value,
+        result;
+
     beforeEach(() => {
         normalize = env.stub().returnsArg(0);
         parseArtists = env.stub().returns(artists);
         parseTitle = env.stub().returns(title);
         parseVariation = env.stub().returns(variation);
 
+        settings = {
+            get: env.stub()
+        };
+
+        settings.get
+            .withArgs('dictionary/titleSeparators')
+            .returns([titleSeparator]);
+        settings.get.withArgs('dictionary/variationSeparators')
+            .returns(variationSeparators);
+
         sut = proxyquire('./index', {
             './normalize': normalize,
             './parseArtists': parseArtists,
             './parseTitle': parseTitle,
-            './parseVariation': parseVariation
+            './parseVariation': parseVariation,
+            '../../settings': settings
         });
     });
 
@@ -104,9 +120,9 @@ describe('parsers/trackInfo/trackInfoParse', () => {
 
         beforeEach(() => {
             value = `${artistsString}${titleSeparator}${titleString}`
-            + `${variationSeparators.start[0]}`
-            + `${variationString}`
-            + `${variationSeparators.end[0]}`;
+                + `${variationSeparators.start[0]}`
+                + `${variationString}`
+                + `${variationSeparators.end[0]}`;
             result = sut(value);
         });
 

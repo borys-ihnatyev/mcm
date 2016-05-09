@@ -1,8 +1,11 @@
 'use strict';
 
+const settings = require('../../settings');
+const titleSeparators = settings.get('dictionary/titleSeparators');
+const variationSeparators = settings.get('dictionary/variationSeparators');
+
+const escapeRegExp = require('escape-string-regexp');
 const normalize = require('./normalize');
-const titleSeparators = require('../../../dictionary/titleSeparators.json');
-const variationSeparators = require('../../../dictionary/variationSeparators.json');
 const parseArtists = require('./parseArtists');
 const titleParse = require('./parseTitle');
 const parseVariation = require('./parseVariation');
@@ -10,23 +13,23 @@ const parseVariation = require('./parseVariation');
 module.exports = function parseTrackInfo(rawValue) {
     let extracted = normalize(rawValue);
 
-    const extractedArtists = extractArtists(extracted);
-    extracted = extractedArtists.extracted;
+    const artists = extractArtists(extracted);
+    extracted = artists.extracted;
 
-    const extractedVariation = extractVariation(extracted);
-    extracted = extractedVariation.extracted;
+    const variation = extractVariation(extracted);
+    extracted = variation.extracted;
 
     const title = titleParse(extracted);
 
     return {
-        artists: extractedArtists.artists.concat(title.artists),
+        artists: artists.artists.concat(title.artists),
         title: title.title,
-        variation: extractedVariation.variation
+        variation: variation.variation
     };
 };
 
 function extractArtists(rawValue) {
-    return ifExists(firstUsedToken(rawValue, titleSeparators),
+    return ifExists(firstUsedToken(rawValue, ...titleSeparators),
         (token) => ({
             artists: parseArtists(beforeToken(rawValue, token)),
             extracted: afterToken(rawValue, token)
@@ -39,7 +42,7 @@ function extractArtists(rawValue) {
 }
 
 function extractVariation(rawValue) {
-    return ifExists(firstUsedToken(rawValue, variationSeparators.start),
+    return ifExists(firstUsedToken(rawValue, ...variationSeparators.start),
         (token) => ({
             variation: parseVariation(removeTokens(
                 afterToken(rawValue, token),
@@ -58,7 +61,7 @@ function ifExists(value, onTrue, onFalse) {
     return value ? onTrue(value) : onFalse();
 }
 
-function firstUsedToken(value, tokens) {
+function firstUsedToken(value, ...tokens) {
     const indexes = tokens
         .map(token => ({
             token,
@@ -83,8 +86,4 @@ function removeTokens(value, ...tokens) {
         'g'
     );
     return value.replace(tokensRx, '');
-}
-
-function escapeRegExp(str) {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 const accidentals = require('../../../model/accidentals');
-const accidentalsDictionary = require('../../../../dictionary/accidentals.json');
+const settings = require('../../../settings');
 const dictionaryParser = require('../../core/dictionaryParser');
 
-module.exports = dictionaryParser(accidentals, accidentalsDictionary);
+module.exports = dictionaryParser(accidentals, settings.get('dictionary/accidentals'));

@@ -1,7 +1,7 @@
 'use strict';
 
 const tones = require('../../model/tones');
-const tonesDictionary = require('../../../dictionary/tones.json');
+const settings = require('../../settings');
 const dictionaryParser = require('../core/dictionaryParser');
 
-module.exports = dictionaryParser(tones, tonesDictionary);
+module.exports = dictionaryParser(tones, settings.get('dictionary/tones'));
