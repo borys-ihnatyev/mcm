@@ -1,22 +1,28 @@
 'use strict';
 
-const proxyquire = require('proxyquire');
+const proxyquire = require('proxyquire').noCallThru();
 
 describe('parsers/accidentalParse', () => {
     let sut;
     let dictionaryParser;
     let parseFn;
+    let settings;
 
-    const accidentals = {};
-    const accidentalsDictionary = {};
+    const accidentals = Symbol('accidentals');
+    const accidentalsDictionary = Symbol('accidentalsDic');
 
     beforeEach(() => {
         parseFn = env.stub();
         dictionaryParser = env.stub().returns(parseFn);
+        settings = {
+            get: env.stub()
+        };
+
+        settings.get.withArgs('dictionary/accidentals').returns(accidentalsDictionary);
 
         sut = proxyquire('./accidentalParse', {
             '../../../model/accidentals': accidentals,
-            '../../../../dictionary/accidentals.json': accidentalsDictionary,
+            '../../../settings': settings,
             '../../core/dictionaryParser': dictionaryParser
         });
     });
@@ -26,8 +32,8 @@ describe('parsers/accidentalParse', () => {
             .calledOnce
             .and
             .calledWith(
-                sinon.match.same(accidentals),
-                sinon.match.same(accidentalsDictionary)
+                accidentals,
+                accidentalsDictionary
             );
     });
 

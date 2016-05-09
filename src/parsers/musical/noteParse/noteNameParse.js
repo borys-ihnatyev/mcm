@@ -1,6 +1,7 @@
 'use strict';
 
-const notesDictionary = require('../../../../dictionary/notes');
+const settings = require('../../../settings');
+const notesDictionary = settings.get('dictionary/notes');
 
 module.exports = noteNameParse;
 

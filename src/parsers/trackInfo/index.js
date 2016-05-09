@@ -1,9 +1,11 @@
 'use strict';
 
+const settings = require('../../settings');
+const titleSeparators = settings.get('dictionary/titleSeparators');
+const variationSeparators = settings.get('dictionary/variationSeparators');
+
 const escapeRegExp = require('escape-string-regexp');
 const normalize = require('./normalize');
-const titleSeparators = require('../../../dictionary/titleSeparators.json');
-const variationSeparators = require('../../../dictionary/variationSeparators.json');
 const parseArtists = require('./parseArtists');
 const titleParse = require('./parseTitle');
 const parseVariation = require('./parseVariation');

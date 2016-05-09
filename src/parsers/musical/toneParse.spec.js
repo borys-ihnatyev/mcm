@@ -1,6 +1,6 @@
 'use strict';
 
-const proxyquire = require('proxyquire');
+const proxyquire = require('proxyquire').noCallThru();
 
 describe('parsers/toneParse', () => {
     let sut;
@@ -9,14 +9,20 @@ describe('parsers/toneParse', () => {
 
     const tones = {};
     const tonesDictionary = {};
+    let settings;
 
     beforeEach(() => {
         parseFn = env.stub();
         dictionaryParser = env.stub().returns(parseFn);
+        settings = {
+            get: env.stub()
+        };
+
+        settings.get.withArgs('dictionary/tones').returns(tonesDictionary);
 
         sut = proxyquire('./toneParse', {
             '../../model/tones': tones,
-            '../../../dictionary/tones.json': tonesDictionary,
+            '../../settings': settings,
             '../core/dictionaryParser': dictionaryParser
         });
     });
